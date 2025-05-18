@@ -1,6 +1,6 @@
 # Repo w/ source code for Finance Tracking website
 
-## Background:
+## Background
 
 A major part of living together is budgeting and managing money together. This site will be hosted and aims to make budgeting easy and accessible. 
 
