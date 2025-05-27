@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
 			<body
 				style={{ 
 					margin:	0,
-					backgroundColor:'lavender'
+					backgroundColor:'#e6e6fa'
 				}}
 			>
 				<Header />
