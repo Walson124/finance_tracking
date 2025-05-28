@@ -10,18 +10,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<html 
-		lang="en"
+		<html
+			lang="en"
 		>
 			<body
-				style={{ 
-					margin:	0,
-					backgroundColor:'#e6e6fa'
+				style={{
+					margin: 0,
+					backgroundColor: '#e6e6fa'
 				}}
 			>
 				<Header />
 				<main
-					style={{ padding:'0.5rem'}}
+					style={{ padding: '0.5rem' }}
 				>
 					{children}
 				</main>

@@ -1,7 +1,7 @@
 # Base image with shared setup
 FROM node:18-alpine AS base
 WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /app/node_modules/.bin:$PATH 
 
 # Install dependencies
 COPY package.json package-lock.json* ./

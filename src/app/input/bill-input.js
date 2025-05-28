@@ -5,7 +5,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import SaveIcon from '@mui/icons-material/Save';
 
-import { Box, Button, Dialog, TextField } from "@mui/material";
+import axios from 'axios';
+import { Box, Button, Dialog, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BillObject } from "../objects/bill-object";
 import { generateRandomPastelColor } from "../utils";
@@ -15,6 +16,9 @@ export function BillInput() {
     const [bills, setBills] = useState([]);
     const [inputBillName, setInputBillName] = useState("");
     const [inputBillAmount, setInputBillAmount] = useState("");
+
+    const [month, setMonth] = useState("");
+    const [year, setYear] = useState("");
 
     const [categories, setCategories] = useState([]);
 
@@ -36,18 +40,55 @@ export function BillInput() {
 
     // loading from db
     useEffect(() => {
-        // hardcode for now
-        setBills([]);
-        setCategories([
-            'Groceries',
-            'Dining',
-            'Gas',
-            'Transportation',
-            'Utilities/Rent',
-            'Household Goods/Home Improvement',
-            'Personal Items'
-        ]);
-    }, []);
+        if (!month || !year) {
+            return;
+        }
+        let requestBody = {
+            "month": month,
+            "year": year
+        }
+        axios.post(
+            `/api/proxy/insert/get_data`,
+            requestBody
+        ).then(response => {
+            console.log('Response:', response.data);
+            if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                let tempBills = [];
+                let tempCategories = new Set();
+                for (let i = 0; i < response.data.length; i++) {
+                    let billData = response.data[i];
+                    let tempRow = new BillObject(billData.name, billData.amount, billData.category);
+                    tempCategories.add(billData.category);
+                    tempBills.push(tempRow);
+                }
+                setBills(tempBills);
+                setCategories(Array.from(tempCategories));
+            } else {
+                setBills([]);
+                setCategories([
+                    'Groceries',
+                    'Dining',
+                    'Gas',
+                    'Transportation',
+                    'Utilities/Rent',
+                    'Household Goods/Home Improvement',
+                    'Personal Items'
+                ]);
+            }
+        }).catch(error => {
+            console.error("Error fetching data:", error);
+            setBills([]);
+            setCategories([
+                'Groceries',
+                'Dining',
+                'Gas',
+                'Transportation',
+                'Utilities/Rent',
+                'Household Goods/Home Improvement',
+                'Personal Items'
+            ]);
+        });
+    }, [month, year]);
 
     function addBill() {
         if (inputBillName && inputBillAmount && parseFloat(inputBillAmount)) {
@@ -101,7 +142,26 @@ export function BillInput() {
     }
 
     function saveData() {
-        console.log('save to db');
+        let extractedData = bills.map(bill => ({
+            name: bill.name,
+            amount: bill.amount,
+            category: bill.category || "", // Ensure category is not undefined
+            month: month,
+            year: year
+        }));
+        let requestBody = {
+            rows: extractedData,
+            month: month,
+            year: year
+        }
+        axios.post(
+            `/api/proxy/insert/add_rows`,
+            requestBody
+        ).then(response => {
+            console.log("Data saved successfully:", response.data);
+        }).catch(error => {
+            console.error("Error saving data:", error);
+        });
     }
 
     return (
@@ -127,6 +187,55 @@ export function BillInput() {
                     }}
                 >
                     <TextField
+                        label="Month"
+                        size="small"
+                        value={month}
+                        onChange={(event) => setMonth(event.target.value)}
+                        sx={{
+                            minWidth: '10rem',
+                            mr: '1rem'
+                        }}
+                        select
+                    >
+                        <MenuItem value="January">January</MenuItem>
+                        <MenuItem value="February">February</MenuItem>
+                        <MenuItem value="March">March</MenuItem>
+                        <MenuItem value="April">April</MenuItem>
+                        <MenuItem value="May">May</MenuItem>
+                        <MenuItem value="June">June</MenuItem>
+                        <MenuItem value="July">July</MenuItem>
+                        <MenuItem value="August">August</MenuItem>
+                        <MenuItem value="September">September</MenuItem>
+                        <MenuItem value="October">October</MenuItem>
+                        <MenuItem value="November">November</MenuItem>
+                        <MenuItem value="December">December</MenuItem>
+                    </TextField>
+                    <TextField
+                        label="Year"
+                        size="small"
+                        value={year}
+                        onChange={(event) => setYear(event.target.value)}
+                        sx={{
+                            minWidth: '10rem',
+                            mr: '1rem'
+                        }}
+                        select
+                    >
+                        {Array.from({ length: 2030 - 2024 + 1 }, (_, index) => 2024 + index).map((yearValue) => (
+                            <MenuItem key={yearValue} value={yearValue}>
+                                {yearValue}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignContent: 'center',
+                        mb: '1rem'
+                    }}
+                >
+                    <TextField
                         size="small"
                         label="Enter Bill Label"
                         value={inputBillName}
@@ -137,7 +246,7 @@ export function BillInput() {
                             }
                         }}
                         sx={{
-                            minWidth: '10rem',
+                            width:'13rem',
                             mr: '1rem'
                         }}
                     />
@@ -152,7 +261,7 @@ export function BillInput() {
                             }
                         }}
                         sx={{
-                            minWidth: '10rem',
+                            width:'12rem',
                             mr: '1rem'
                         }}
                     />
@@ -267,7 +376,7 @@ export function BillInput() {
                 ))}
             </Box>
             {/* CATEGORIES HERE --> */}
-            {bills.length > 0 && <hr></hr>}
+            <hr></hr>
             {bills.length > 0 &&
                 <Box>
                     <Box
@@ -365,11 +474,21 @@ export function BillInput() {
                     </Box>
                 </Box>
             }
+            {bills.length == 0 &&
+                <Button
+                    variant="contained"
+                    endIcon={<SaveIcon />}
+                    onClick={() => saveData()}
+                >
+                    Save Data
+                </Button>
+            }
             <Dialog
                 open={openCategoryManagement}
                 onClose={() => {
                     setNewCategory("");
-                    setOpenCategoryManagement(false)}
+                    setOpenCategoryManagement(false)
+                }
                 }
             >
                 <Box

@@ -4,4 +4,12 @@ export class BillObject {
         this.amount = amount;
         this.category = category;
     }
+
+    toJson() {
+        return {
+            name: this.name,
+            amount: this.amount,
+            category: this.category
+        }
+    }
 }
