@@ -14,6 +14,7 @@ import { generateRandomPastelColor } from "../utils";
 export function BillInput() {
 
     const [bills, setBills] = useState([]);
+    const [inputBillUser, setInputBillUser] = useState("default");
     const [inputBillName, setInputBillName] = useState("");
     const [inputBillAmount, setInputBillAmount] = useState("");
 
@@ -21,6 +22,7 @@ export function BillInput() {
     const [year, setYear] = useState("");
 
     const [categories, setCategories] = useState([]);
+    const [userOptions, setUserOptions] = useState([]);
 
     const [groups, setGroups] = useState({});
 
@@ -38,7 +40,19 @@ export function BillInput() {
         setColors(generatedColors);
     }, [categories]);
 
-    // loading from db
+    // loading on db to get users
+    useEffect(() => {
+        axios.get(
+            '/api/proxy/general/get_users'
+        ).then(response => {
+            console.log('users response:', response.data);
+            setUserOptions(response.data);
+        }).catch(error => {
+            console.error("Error fetching users:", error);
+        });
+    }, []);
+
+    // loading from db based on month/year
     useEffect(() => {
         if (!month || !year) {
             return;
@@ -57,7 +71,7 @@ export function BillInput() {
                 let tempCategories = new Set();
                 for (let i = 0; i < response.data.length; i++) {
                     let billData = response.data[i];
-                    let tempRow = new BillObject(billData.name, billData.amount, billData.category);
+                    let tempRow = new BillObject(billData.name, billData.amount, billData.assigned_user, billData.category);
                     tempCategories.add(billData.category);
                     tempBills.push(tempRow);
                 }
@@ -92,7 +106,7 @@ export function BillInput() {
 
     function addBill() {
         if (inputBillName && inputBillAmount && parseFloat(inputBillAmount)) {
-            let temp = new BillObject(inputBillName, inputBillAmount);
+            let temp = new BillObject(inputBillName, inputBillAmount, inputBillUser);
             setBills(prevState => { return [...prevState, temp] });
             setInputBillName("");
             setInputBillAmount("");
@@ -147,7 +161,8 @@ export function BillInput() {
             amount: bill.amount,
             category: bill.category || "", // Ensure category is not undefined
             month: month,
-            year: year
+            year: year,
+            user: bill.assigned_user || "default" // Default user if not set
         }));
         let requestBody = {
             rows: extractedData,
@@ -237,6 +252,32 @@ export function BillInput() {
                 >
                     <TextField
                         size="small"
+                        label="Assigned To User"
+                        value={inputBillUser}
+                        onChange={(event) => setInputBillUser(event.target.value)}
+                        sx={{
+                            minWidth: '10rem',
+                            mr: '1rem'
+                        }}
+                        select
+                    >
+                        <MenuItem value="default"></MenuItem>
+                        {userOptions.map((user, index) => (
+                            <MenuItem key={index} value={user}>
+                                {user}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignContent: 'center',
+                        mb: '1rem'
+                    }}
+                >
+                    <TextField
+                        size="small"
                         label="Enter Bill Label"
                         value={inputBillName}
                         onChange={(event) => setInputBillName(event.target.value)}
@@ -246,7 +287,7 @@ export function BillInput() {
                             }
                         }}
                         sx={{
-                            width:'13rem',
+                            width: '13rem',
                             mr: '1rem'
                         }}
                     />
@@ -261,7 +302,7 @@ export function BillInput() {
                             }
                         }}
                         sx={{
-                            width:'12rem',
+                            width: '12rem',
                             mr: '1rem'
                         }}
                     />
@@ -296,6 +337,10 @@ export function BillInput() {
                             backgroundColor: colors[categories.indexOf(bill.category)] || "lightgray",
                         }}
                     >
+                        <Box>
+                            {bill.assigned_user === "default" ? "Unassigned" : bill.assigned_user}
+                        </Box>
+                        <hr></hr>
                         <Box
                             sx={{
                                 display: 'flex', flexDirection: 'row'
@@ -305,45 +350,63 @@ export function BillInput() {
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'row',
-                                    width: '100%'
+                                    width: '100%',
+                                    alignItems: 'center', // Align both inputs vertically
                                 }}
                             >
-                                <input
-                                    type="text"
-                                    value={bill.name}
-                                    onChange={(event) => {
-                                        setBills((prevState) =>
-                                            prevState.map((b, i) =>
-                                                i === index ? { ...b, name: event.target.value } : b
-                                            )
-                                        );
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center', // Align the input vertically
                                     }}
-                                    style={{
-                                        border: 'none',
-                                        background: 'transparent',
-                                        textAlign: 'left',
-                                        fontSize: '1rem',
-                                        width: `${bill.name.length + 1}ch`, // Dynamically adjust width based on content
+                                >
+                                    <input
+                                        type="text"
+                                        value={bill.name}
+                                        onChange={(event) => {
+                                            setBills((prevState) =>
+                                                prevState.map((b, i) =>
+                                                    i === index ? { ...b, name: event.target.value } : b
+                                                )
+                                            );
+                                        }}
+                                        style={{
+                                            border: 'none',
+                                            background: 'transparent',
+                                            textAlign: 'left',
+                                            fontSize: '1rem',
+                                            width: 'auto'
+                                            // width: `${bill.name.length + 1}ch`, // Dynamically adjust width based on content
+                                        }}
+                                    />
+                                </Box>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center', // Align the $ sign and input vertically
                                     }}
-                                />
-                                <input
-                                    type="text"
-                                    value={"$" + bill.amount}
-                                    onChange={(event) => {
-                                        setBills((prevState) => {
-                                            let temp = [...prevState];
-                                            temp[index].amount = event.target.value;
-                                            return temp;
-                                        });
-                                    }}
-                                    style={{
-                                        border: 'none',
-                                        background: 'transparent',
-                                        textAlign: 'left',
-                                        fontSize: '1rem',
-                                        width: `${bill.amount.length + 1}ch`, // Dynamically adjust width based on content
-                                    }}
-                                />
+                                >
+                                    <span>$</span>
+                                    <input
+                                        type="text"
+                                        value={bill.amount}
+                                        onChange={(event) => {
+                                            setBills((prevState) => {
+                                                let temp = [...prevState];
+                                                temp[index].amount = event.target.value;
+                                                return temp;
+                                            });
+                                        }}
+                                        style={{
+                                            border: 'none',
+                                            background: 'transparent',
+                                            textAlign: 'left',
+                                            fontSize: '1rem',
+                                            width: 'auto'
+                                            // width: `${String(bill.amount).length + 1}ch`, // Dynamically adjust width based on content
+                                        }}
+                                    />
+                                </Box>
                             </Box>
                             <Box
                                 sx={{
