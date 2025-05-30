@@ -1,4 +1,3 @@
-import { BillObject } from "../objects/bill-object";
 import { BillInput } from "./bill-input";
 
 export const metadata = {

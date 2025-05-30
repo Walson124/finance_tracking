@@ -5,7 +5,8 @@ export default function Header() {
         <header
             style={{
                 height: '5vh',
-                width: '100%'
+                width: '100%',
+                marginBottom: '1rem',
             }}
         >
             <Box
@@ -77,7 +78,7 @@ export default function Header() {
                     }}
                 >
                     <a
-                        href='/'
+                        href='/analysis'
                         style={{
                             textDecoration: 'none', // Removes underline
                             color: 'inherit' // Inherits text color from parent
@@ -87,6 +88,11 @@ export default function Header() {
                     </a>
                 </Box>
             </Box>
+            <hr
+                style={{
+                    borderTop: '1px dashed gray',
+                }}
+            ></hr>
         </header>
     );
 }
