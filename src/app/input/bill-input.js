@@ -6,6 +6,7 @@ import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import SaveIcon from '@mui/icons-material/Save';
 
 import axios from 'axios';
+import React, { useRef } from 'react';
 import { Box, Button, Dialog, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BillObject } from "../objects/bill-object";
@@ -17,6 +18,7 @@ export function BillInput() {
     const [inputBillUser, setInputBillUser] = useState("default");
     const [inputBillName, setInputBillName] = useState("");
     const [inputBillAmount, setInputBillAmount] = useState("");
+    const labelRef = useRef(null);
 
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
@@ -107,9 +109,10 @@ export function BillInput() {
     function addBill() {
         if (inputBillName && inputBillAmount && parseFloat(inputBillAmount)) {
             let temp = new BillObject(inputBillName, inputBillAmount, inputBillUser);
-            setBills(prevState => { return [...prevState, temp] });
+            setBills(prevState => { return [temp, ...prevState] });
             setInputBillName("");
             setInputBillAmount("");
+            labelRef.current?.focus();
         }
     }
 
@@ -174,6 +177,11 @@ export function BillInput() {
             requestBody
         ).then(response => {
             console.log("Data saved successfully:", response.data);
+            if (response.data == "success") {
+                alert("Data saved successfully!");
+            } else {
+                alert("Error saving data, please try again.");
+            }
         }).catch(error => {
             console.error("Error saving data:", error);
         });
@@ -252,7 +260,7 @@ export function BillInput() {
                 >
                     <TextField
                         size="small"
-                        label="Assigned To User"
+                        label="Assign To User"
                         value={inputBillUser}
                         onChange={(event) => setInputBillUser(event.target.value)}
                         sx={{
@@ -277,6 +285,7 @@ export function BillInput() {
                     }}
                 >
                     <TextField
+                        inputRef={labelRef}
                         size="small"
                         label="Enter Bill Label"
                         value={inputBillName}

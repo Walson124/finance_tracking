@@ -7,6 +7,12 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json package-lock.json* ./
 RUN npm install
 
+# Copy certificates for HTTPS
+COPY ./certs /app/certs
+ENV HTTPS=true
+ENV SSL_CRT_FILE=/app/certs/localhost.crt
+ENV SSL_KEY_FILE=/app/certs/localhost.key
+
 # --- DEVELOPMENT STAGE ---
 FROM base AS development
 

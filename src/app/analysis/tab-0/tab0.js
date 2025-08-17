@@ -1,10 +1,12 @@
 "use client";
 
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import { Box, Button, IconButton, MenuItem, TextField } from "@mui/material";
 import { PieChart } from '@mui/x-charts/PieChart';
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PieChartIcon from '@mui/icons-material/PieChart';
 
 export function Tab0() {
@@ -13,15 +15,64 @@ export function Tab0() {
     const [pieMonthOptions, setPieMonthOptions] = useState([]);
     const [pieCategoryOptions, setPieCategoryOptions] = useState([]);
     const [pieUserOptions, setPieUserOptions] = useState([]);
-    const [pieSelectedYear, setPieSelectedYear] = useState("");
-    const [pieSelectedMonth, setPieSelectedMonth] = useState("");
-    const [pieSelectedCategory, setPieSelectedCategory] = useState("");
-    const [pieSelectedUser, setPieSelectedUser] = useState("");
-    const [pieChartData, setPieChartData] = useState({});
+
+    const [pieChartLabels, setPieChartLabels] = useState([]);
+
+    const [pieSelectedYears, setPieSelectedYears] = useState([]);
+    const [pieSelectedMonths, setPieSelectedMonths] = useState([]);
+    const [pieSelectedCategorys, setPieSelectedCategorys] = useState([]);
+    const [pieSelectedUsers, setPieSelectedUsers] = useState([]);
+    const [pieChartData, setPieChartData] = useState([]);
     const [selectedPieChartData, setSelectedPieChartData] = useState([]);
     const [pieChartGroupOptions, setPieChartGroupOptions] = useState([]);
-    const [pieChartSelectedGroup, setPieChartSelectedGroup] = useState("");
+    const [pieChartSelectedGroups, setPieChartSelectedGroups] = useState([]);
 
+    function addPieChart() {
+        setPieChartLabels((prevState) => [...prevState, `Dynamic Pie Chart ${prevState.length + 1}`]);
+        setPieSelectedYears((prevState) => [...prevState, ""]);
+        setPieSelectedMonths((prevState) => [...prevState, ""]);
+        setPieSelectedCategorys((prevState) => [...prevState, ""]);
+        setPieSelectedUsers((prevState) => [...prevState, ""]);
+        setPieChartData((prevState) => [...prevState, {}]);
+        setSelectedPieChartData((prevState) => [...prevState, []]);
+        setPieChartGroupOptions((prevState) => [...prevState, []]);
+        setPieChartSelectedGroups((prevState) => [...prevState, ""]);
+    }
+
+    function deletePieChart(index) {
+        function helper(prev_state) {
+            let temp = [...prev_state];
+            temp.splice(index, 1);
+            return temp
+        }
+        setPieChartLabels((prevState) => {
+            return helper(prevState);
+        });
+        setPieSelectedYears((prevState) => {
+            return helper(prevState);
+        });
+        setPieSelectedMonths((prevState) => {
+            return helper(prevState);
+        });
+        setPieSelectedCategorys((prevState) => {
+            return helper(prevState);
+        });
+        setPieSelectedUsers((prevState) => {
+            return helper(prevState);
+        });
+        setPieChartData((prevState) => {
+            return helper(prevState);
+        });
+        setSelectedPieChartData((prevState) => {
+            return helper(prevState);
+        });
+        setPieChartGroupOptions((prevState) => {
+            return helper(prevState);
+        });
+        setPieChartSelectedGroups((prevState) => {
+            return helper(prevState);
+        });
+    }
 
     useEffect(() => {
         axios.get(
@@ -37,12 +88,12 @@ export function Tab0() {
         });
     }, []);
 
-    function getPieChartData() {
+    function getPieChartData(chart_num) {
         var requestBody = {
-            "month": pieSelectedMonth,
-            "year": pieSelectedYear,
-            "category": pieSelectedCategory,
-            "assigned_user": pieSelectedUser
+            "month": pieSelectedMonths[chart_num],
+            "year": pieSelectedYears[chart_num],
+            "category": pieSelectedCategorys[chart_num],
+            "assigned_user": pieSelectedUsers[chart_num]
         }
         axios.post(
             '/api/proxy/analysis/get_pi_chart',
@@ -50,12 +101,33 @@ export function Tab0() {
         ).then((response) => {
             console.log(response.data);
             if (Object.keys(response.data).length > 0) {
-                console.log(Object.keys(response.data));
-                setPieChartData(response.data);
-                setPieChartGroupOptions(Object.keys(response.data));
-                if (pieChartSelectedGroup === "") {
-                    setPieChartSelectedGroup(Object.keys(response.data)[0]);
-                    setSelectedPieChartData(response.data[Object.keys(response.data)[0]]);
+                setPieChartData((prevState) => {
+                    let temp = [...prevState];
+                    temp[chart_num] = response.data;
+                    return temp;
+                })
+                setPieChartGroupOptions((prevState) => {
+                    let temp = [...prevState];
+                    temp[chart_num] = Object.keys(response.data);
+                    return temp;
+                })
+                if (Object.keys(response.data).includes(pieChartSelectedGroups[chart_num])) {
+                    setSelectedPieChartData((prevState) => {
+                        let temp = [...prevState];
+                        temp[chart_num] = response.data[pieChartSelectedGroups[chart_num]];
+                        return temp;
+                    })
+                } else {
+                    setPieChartSelectedGroups((prevState) => {
+                        let temp = [...prevState];
+                        temp[chart_num] = Object.keys(response.data)[0];
+                        return temp;
+                    })
+                    setSelectedPieChartData((prevState) => {
+                        let temp = [...prevState];
+                        temp[chart_num] = response.data[Object.keys(response.data)[0]];
+                        return temp;
+                    })
                 }
             }
         }).catch(error => {
@@ -87,204 +159,256 @@ export function Tab0() {
             </Box>
             <Box
                 sx={{
-                    height: 'fit-content',
-                    minHeight: '22rem',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    gap: '1rem',
+                    width: '100%',
+                    height: 'auto', // 'calc(50% - 0.5rem)',
+                    border: '1px solid gray',
+                    borderRadius: '0.5rem',
+                    mb: '1rem'
                 }}
             >
-                <Box
-                    sx={{
-                        flex: '1 1 50rem', // grow:1, shrink:1, basis:300px
-                        height: 'fit-content',
-                        minHeight: '100%',
-                        border: '1px solid gray',
-                        borderRadius: '0.5rem',
-                        minWidth: 0, // to prevent overflow issues
-                    }}
+                <Button
+                    onClick={() => addPieChart()}
+                    endIcon={<AddIcon />}
                 >
+                    New Pie Chart
+                </Button>
+                {pieChartData.length > 0 &&
                     <Box
                         sx={{
-                            margin: '1rem',
-                        }}
-                    >
-                        <h2>Dynamic Pie Chart</h2>
-                    </Box>
-                    <Box
-                        sx={{
-                            width: 'calc(100% - 2rem)', // subtract left + right margin (0.5rem each)
-                            // minHeight: 'calc(100% - 2rem)', // subtract top + bottom margin
-                            margin: '1rem',
-                            // border: '1px solid gray',
+                            height: 'fit-content',
                             display: 'flex',
                             flexDirection: 'row',
                             flexWrap: 'wrap',
+                            // border: '1px solid black',
+                            width: '100%',
                         }}
                     >
-                        <Box
-                            sx={{
-                                width: '50%',
-                                // border: '1px solid black',
-                                flex: '1 1 20rem',
-                                minWidth: 0,
-                                height: 'fit-content',
-                            }}
-                        >
-                            <TextField
-                                label="Year"
-                                size="small"
-                                value={pieSelectedYear}
-                                onChange={(event) => setPieSelectedYear(event.target.value)}
-                                sx={{
-                                    margin: '0.5rem',
-                                    width: '9rem'
-                                }}
-                                select
-                            >
-                                <MenuItem value=""></MenuItem>
-                                {pieYearOptions.map((year) => (
-                                    <MenuItem key={year} value={year}>
-                                        {year}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            <TextField
-                                label="Month"
-                                size="small"
-                                value={pieSelectedMonth}
-                                onChange={(event) => setPieSelectedMonth(event.target.value)}
-                                sx={{
-                                    margin: '0.5rem',
-                                    width: '9rem'
-                                }}
-                                select
-                            >
-                                <MenuItem value=""></MenuItem>
-                                {pieMonthOptions.map((month) => (
-                                    <MenuItem key={month} value={month}>
-                                        {month}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            <TextField
-                                label="Category"
-                                size="small"
-                                value={pieSelectedCategory}
-                                onChange={(event) => setPieSelectedCategory(event.target.value)}
-                                sx={{
-                                    margin: '0.5rem',
-                                    width: '9rem'
-                                }}
-                                select
-                            >
-                                <MenuItem value=""></MenuItem>
-                                {pieCategoryOptions.map((category) => (
-                                    <MenuItem key={category} value={category}>
-                                        {category}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                            <TextField
-                                label="Assigned user"
-                                size="small"
-                                value={pieSelectedUser}
-                                onChange={(event) => setPieSelectedUser(event.target.value)}
-                                sx={{
-                                    margin: '0.5rem',
-                                    width: '9rem'
-                                }}
-                                select
-                            >
-                                <MenuItem value=""></MenuItem>
-                                {pieUserOptions.map((user) => (
-                                    <MenuItem key={user} value={user}>
-                                        {user}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                        {selectedPieChartData.map((data, index) => (
                             <Box
+                                key={index}
                                 sx={{
-                                    paddingLeft: '0.5rem',
-                                    paddingTop: '0.5rem',
+                                    flex: '1 1 50rem',
+                                    minWidth: 0,
+                                    height: 'fit-content',
+                                    border: '1px solid gray',
+                                    borderRadius: '0.5rem',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    margin: '1rem 1rem 1rem 1rem',
                                     paddingBottom: '0.5rem',
                                 }}
                             >
-                                <Button
-                                    size="small"
-                                    endIcon={<PieChartIcon />}
-                                    variant="outlined"
+                                <Box
                                     sx={{
-                                        justifyContent: 'flex-start',
-                                        borderColor: 'rgba(0, 0, 0, 0.23)', // match MUI TextField
-                                        color: 'rgba(0, 0, 0, 0.87)',
-                                        fontSize: '16px',
-                                        textTransform: 'none',
+                                        width: '50%',
+                                        minWidth: '20rem', // filters at least 2 in a row
                                     }}
-                                    onClick={() => getPieChartData()}
                                 >
-                                    Create pie chart
-                                </Button>
+                                    <Box
+                                        sx={{
+                                            margin: '1rem',
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            gap: '1rem'
+                                        }}
+                                    >
+                                        <IconButton
+                                            onClick={() => { deletePieChart(index) }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        <h2
+                                            contentEditable={true}
+                                            suppressContentEditableWarning={true}
+                                        >
+                                            {pieChartLabels[index] || `Dynamic Pie Chart ${index + 1}`}
+                                        </h2>
+                                    </Box>
+                                    {/* Box to hold textfields (choices) --> */}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            flexWrap: 'wrap',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <TextField
+                                            label="Year"
+                                            size="small"
+                                            value={pieSelectedYears[index]}
+                                            onChange={(event) =>
+                                                setPieSelectedYears((prevState) => {
+                                                    let temp = [...prevState];
+                                                    temp[index] = event.target.value;
+                                                    return temp;
+                                                })
+                                            }
+                                            sx={{
+                                                margin: '0.5rem',
+                                                width: '9rem'
+                                            }}
+                                            select
+                                        >
+                                            <MenuItem value=""></MenuItem>
+                                            {pieYearOptions.map((year) => (
+                                                <MenuItem key={year} value={year}>
+                                                    {year}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <TextField
+                                            label="Month"
+                                            size="small"
+                                            value={pieSelectedMonths[index]}
+                                            onChange={(event) =>
+                                                setPieSelectedMonths((prevState) => {
+                                                    let temp = [...prevState];
+                                                    temp[index] = event.target.value;
+                                                    return temp;
+                                                })
+                                            }
+                                            sx={{
+                                                margin: '0.5rem',
+                                                width: '9rem'
+                                            }}
+                                            select
+                                        >
+                                            <MenuItem value=""></MenuItem>
+                                            {pieMonthOptions.map((month) => (
+                                                <MenuItem key={month} value={month}>
+                                                    {month}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <TextField
+                                            label="Category"
+                                            size="small"
+                                            value={pieSelectedCategorys[index]}
+                                            onChange={(event) =>
+                                                setPieSelectedCategorys((prevState) => {
+                                                    let temp = [...prevState];
+                                                    temp[index] = event.target.value;
+                                                    return temp;
+                                                })
+                                            }
+                                            sx={{
+                                                margin: '0.5rem',
+                                                width: '9rem'
+                                            }}
+                                            select
+                                        >
+                                            <MenuItem value=""></MenuItem>
+                                            {pieCategoryOptions.map((category) => (
+                                                <MenuItem key={category} value={category}>
+                                                    {category}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <TextField
+                                            label="Assigned user"
+                                            size="small"
+                                            value={pieSelectedUsers[index]}
+                                            onChange={(event) =>
+                                                setPieSelectedUsers((prevState) => {
+                                                    let temp = [...prevState];
+                                                    temp[index] = event.target.value;
+                                                    return temp;
+                                                })
+                                            }
+                                            sx={{
+                                                margin: '0.5rem',
+                                                width: '9rem'
+                                            }}
+                                            select
+                                        >
+                                            <MenuItem value=""></MenuItem>
+                                            {pieUserOptions.map((user) => (
+                                                <MenuItem key={user} value={user}>
+                                                    {user}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                        <Box
+                                            sx={{
+                                                marginLeft: '0.5rem'
+                                            }}
+                                        >
+                                            <Button
+                                                size="small"
+                                                endIcon={<PieChartIcon />}
+                                                variant="outlined"
+                                                sx={{
+                                                    justifyContent: 'flex-start',
+                                                    borderColor: 'rgba(0, 0, 0, 0.23)', // match MUI TextField
+                                                    color: 'rgba(0, 0, 0, 0.87)',
+                                                    fontSize: '16px',
+                                                    textTransform: 'none',
+                                                    paddingTop: '0.3rem',
+                                                    paddingBottom: '0.3rem'
+                                                }}
+                                                onClick={() => getPieChartData(index)}
+                                            >
+                                                Create pie chart
+                                            </Button>
+                                        </Box>
+                                        {pieChartGroupOptions[index].length > 0 && (
+                                            <TextField
+                                                label="Group by"
+                                                size="small"
+                                                value={pieChartSelectedGroups[index]}
+                                                onChange={(event) => {
+                                                    let new_value = event.target.value;
+                                                    setPieChartSelectedGroups((prevState) => {
+                                                        let temp = [...prevState];
+                                                        temp[index] = new_value;
+                                                        return temp;
+                                                    })
+                                                    setSelectedPieChartData((prevState) => {
+                                                        let temp = [...prevState];
+                                                        temp[index] = pieChartData[index][new_value] || {};
+                                                        return temp;
+                                                    })
+                                                }}
+                                                sx={{
+                                                    margin: '0.5rem',
+                                                    width: '9rem'
+                                                }}
+                                                select
+                                            >
+                                                <MenuItem value=""></MenuItem>
+                                                {pieChartGroupOptions[index].map((group) => (
+                                                    <MenuItem key={group} value={group}>
+                                                        {group}
+                                                    </MenuItem>
+                                                ))}
+                                            </TextField>
+                                        )}
+                                    </Box>
+                                </Box>
+                                {/* Box for plot --> */}
+                                {data.length > 0 && (
+                                    <Box
+                                        sx={{
+                                            width: '50%',
+                                        }}
+                                    >
+                                        <PieChart
+                                            series={[{
+                                                data: data,
+                                                highlightScope: { fade: 'global', highlight: 'item' },
+                                                faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                                            }]}
+                                            width={350}
+                                            height={350}
+                                            hideLegend={true}
+                                        />
+                                    </Box>
+                                )}
                             </Box>
-                            {pieChartGroupOptions.length > 0 && (
-                                <TextField
-                                    label="Group by"
-                                    size="small"
-                                    value={pieChartSelectedGroup}
-                                    onChange={(event) => {
-                                        let temp = event.target.value;
-                                        setPieChartSelectedGroup(temp);
-                                        setSelectedPieChartData(pieChartData[temp] || {});
-                                    }}
-                                    sx={{
-                                        margin: '0.5rem',
-                                        width: '9rem'
-                                    }}
-                                    select
-                                >
-                                    <MenuItem value=""></MenuItem>
-                                    {pieChartGroupOptions.map((group) => (
-                                        <MenuItem key={group} value={group}>
-                                            {group}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            )}
-                        </Box>
-                        {selectedPieChartData.length > 0 && (
-                            <Box
-                                sx={{
-                                    width: '50%',
-                                    // border: '1px solid black',
-                                    flex: '1 1 20rem',
-                                    minHeight: '20.5rem',
-                                    minWidth: 0,
-                                }}
-                            >
-                                <PieChart
-                                    series={[{
-                                        data: selectedPieChartData,
-                                    }]}
-                                    width={350}
-                                    height={350}
-                                    hideLegend={true}
-                                />
-                            </Box>
-                        )}
+                        ))}
                     </Box>
-                </Box>
-                <Box
-                    sx={{
-                        flex: '1 1 50rem', // same here
-                        minHeight: '20.5rem',
-                        border: '1px solid gray',
-                        borderRadius: '0.5rem',
-                        minWidth: 0,
-                    }}
-                >
-                    chat
-                </Box>
+                }
             </Box>
         </Box >
     );
