@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Finance Tracking Frontend
+
+This is the frontend for the finance_app project, built with [Next.js](https://nextjs.org) and [MUI](https://mui.com/).
+
+## Features
+
+- Dynamic pie chart analysis by year, month, category, and user
+- Histogram of category sums (last 6 months)
+- Proxy API requests to backend for analysis and data
+- Editable chart labels and flexible chart creation/deletion
+- Responsive UI with Material-UI components
 
 ## Getting Started
 
-First, run the development server:
-
+**Development:**
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Production (Docker):**
+This app is designed to run as part of the `finance_app` Docker Compose setup.  
+See the main `finance_app` README for orchestration instructions.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Editing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Main page: `src/app/page.js`
+- Analysis tab: `src/app/analysis/tab-0/tab0.js`
+- API proxy: `/api/proxy/*` routes
+
+## Environment
+
+- Uses HTTPS in Docker (see Dockerfile and certs)
+- Environment variables can be set via Docker Compose
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [MUI Documentation](https://mui.com/)
+- [Project Structure](../README.md) (main repo)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- For backend API, ensure `finance_tracking_api` is running and accessible.
+- Chart data is fetched from `/api/proxy/analysis/get_params` and `/api/proxy/analysis/get_pi_chart`.
+- You can add, edit, and delete pie charts dynamically in the analysis tab.
 
-## Deploy on Vercel
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
