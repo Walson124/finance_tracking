@@ -8,11 +8,12 @@ import { convertMonthIndex } from "@/app/utils";
 export const StackAnalysis = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [queriedData, setQueriedData] = useState({
-        'category1': [1, 2, 3, 4, 5],
-        'category2': [6, 7, 8, 9, 10],
-        'category3': [15, 14, 13, 12, 11]
+        'category1': [1, 2, 3, 4, 5, 1, 1, 1],
+        'category2': [6, 7, 8, 9, 10, 1, 1, 1],
+        'category3': [15, 14, 13, 12, 11, 1, 1, 1],
+        'category4': [99999, 88888, 77777, 66666, 55555, 44444, 1, 1, 1]
     });
-    const [orderedYM, setOrderedYM] = useState(["a", "b", "c", "d", "e"]);
+    const [orderedYM, setOrderedYM] = useState(["January 2025", "February 2025", "March 2025", "April 2025", "May 2025", "June 2025", "July 2025", "August 2025"]);
 
     const handleCategoryChange = (event) => {
         const {
@@ -35,6 +36,7 @@ export const StackAnalysis = () => {
                 let temp = response.data.distinct_ym[i];
                 temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
             }
+            console.log('orderedYM: ', temp_ym);
             setOrderedYM(temp_ym);
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
