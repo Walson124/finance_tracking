@@ -24,10 +24,13 @@ export const StackAnalysis = () => {
             '/api/proxy/analysis/get_stack_chart',
         ).then((response) => {
             console.log(response.data);
+            if (response.data.length == 0) {
+                return;
+            }
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
         });
-    }, [selectedCategories]);
+    }, []);
 
     return (
         <Box>
