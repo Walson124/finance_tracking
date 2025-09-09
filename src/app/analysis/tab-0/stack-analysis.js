@@ -14,7 +14,6 @@ export const StackAnalysis = () => {
         'category4': [99999, 88888, 77777, 66666, 55555, 44444, 1, 1, 1]
     });
     const [orderedYM, setOrderedYM] = useState(["January 2025", "February 2025", "March 2025", "April 2025", "May 2025", "June 2025", "July 2025", "August 2025"]);
-    const [chartKey, setChartKey] = useState(0);
 
     const handleCategoryChange = (event) => {
         const {
@@ -22,12 +21,6 @@ export const StackAnalysis = () => {
         } = event;
         setSelectedCategories(typeof value === 'string' ? value.split(',') : value);
     }
-
-    useEffect(() => {
-        if (orderedYM.length > 0 && selectedCategories.length > 0) {
-            setChartKey(prev => prev + 1); // force remount
-        }
-    }, [orderedYM, selectedCategories]);
 
     useEffect(() => {
         axios.get(
@@ -38,13 +31,13 @@ export const StackAnalysis = () => {
                 return;
             }
             setQueriedData(response.data.stacked);
-            let temp_ym = [];
-            for (let i = 0; i < response.data.distinct_ym.length; i++) {
-                let temp = response.data.distinct_ym[i];
-                temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
-            }
-            console.log('orderedYM: ', temp_ym);
-            setOrderedYM(temp_ym);
+            // let temp_ym = [];
+            // for (let i = 0; i < response.data.distinct_ym.length; i++) {
+            //     let temp = response.data.distinct_ym[i];
+            //     temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
+            // }
+            // console.log('orderedYM: ', temp_ym);
+            // setOrderedYM(temp_ym);
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
         });
@@ -103,11 +96,10 @@ export const StackAnalysis = () => {
             </Box>
             {selectedCategories.length > 0 && selectedCategories.every(category => queriedData[category]) && (
                 <BarChart
-                    key={chartKey} // remount refresh
                     height={300}
                     xAxis={[
                         {
-                            data: orderedYM,
+                            // data: orderedYM,
                             label: 'Month Year', // label for the X axis
                         },
                     ]}
