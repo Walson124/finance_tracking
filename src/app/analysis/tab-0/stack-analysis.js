@@ -27,6 +27,7 @@ export const StackAnalysis = () => {
             if (response.data.length == 0) {
                 return;
             }
+            setQueriedData(response.data);
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
         });
