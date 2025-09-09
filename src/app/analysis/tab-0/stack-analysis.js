@@ -31,13 +31,13 @@ export const StackAnalysis = () => {
                 return;
             }
             setQueriedData(response.data.stacked);
-            // let temp_ym = [];
-            // for (let i = 0; i < response.data.distinct_ym.length; i++) {
-            //     let temp = response.data.distinct_ym[i];
-            //     temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
-            // }
-            // console.log('orderedYM: ', temp_ym);
-            // setOrderedYM(temp_ym);
+            let temp_ym = [];
+            for (let i = 0; i < response.data.distinct_ym.length; i++) {
+                let temp = response.data.distinct_ym[i];
+                temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
+            }
+            console.log('orderedYM: ', temp_ym);
+            setOrderedYM(temp_ym);
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
         });
@@ -99,7 +99,7 @@ export const StackAnalysis = () => {
                     height={300}
                     xAxis={[
                         {
-                            // data: orderedYM,
+                            data: orderedYM,
                             label: 'Month Year', // label for the X axis
                         },
                     ]}
