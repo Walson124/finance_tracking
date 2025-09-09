@@ -19,7 +19,13 @@ export const StackAnalysis = () => {
     }
 
     useEffect(() => {
-        // grab data from backend
+        axios.get(
+            '/api/proxy/analysis/get_stack_chart',
+        ).then((response) => {
+            console.log(response.data);
+        }).catch((error) => {
+            console.error("Error fetching stack chart options:", error);
+        });
     }, [selectedCategories]);
 
     return (
