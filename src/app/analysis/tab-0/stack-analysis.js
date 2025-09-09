@@ -3,6 +3,7 @@ import { Box, MenuItem, TextField, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { convertMonthIndex } from "@/app/utils";
 
 export const StackAnalysis = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -11,6 +12,7 @@ export const StackAnalysis = () => {
         'category2': [6, 7, 8, 9, 10],
         'category3': [15, 14, 13, 12, 11]
     });
+    const [orderedYM, setOrderedYM] = useState([0, 1, 2, 3, 4]);
 
     const handleCategoryChange = (event) => {
         const {
@@ -28,6 +30,12 @@ export const StackAnalysis = () => {
                 return;
             }
             setQueriedData(response.data.stacked);
+            let temp_ym = [];
+            for (let i = 0; i < response.data.distinct_ym.length; i++) {
+                let temp = response.data.distinct_ym[i];
+                temp_ym.push(`${convertMonthIndex(temp[1])} ${toString(temp[0])}`);
+            }
+            setOrderedYM(temp_ym);
         }).catch((error) => {
             console.error("Error fetching stack chart options:", error);
         });
@@ -87,6 +95,18 @@ export const StackAnalysis = () => {
             {selectedCategories.length > 0 && selectedCategories.every(category => queriedData[category]) && (
                 <BarChart
                     height={300}
+                    xAxis={[
+                        {
+                            data: orderedYM,
+                            label: 'Month Year', // label for the X axis
+                        },
+                    ]}
+                    yAxis={[
+                        {
+                            label: 'Amount ($)', // label for the Y axis
+                        },
+                    ]}
+                    margin={{ left: 30 }}
                     series={selectedCategories.map(category => ({
                         data: queriedData[category],
                         label: category,
