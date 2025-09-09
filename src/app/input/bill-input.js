@@ -159,6 +159,12 @@ export function BillInput() {
     }
 
     function saveData() {
+        // check if bills is empty, prevent empty replace
+        if (bills.length == 0) {
+            if (!confirm("Are you sure you want to submit empty data?")) {
+                return;
+            }
+        }
         let extractedData = bills.map(bill => ({
             name: bill.name,
             amount: bill.amount,
