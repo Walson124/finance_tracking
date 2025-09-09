@@ -2,6 +2,7 @@ import { Label } from "@mui/icons-material";
 import { Box, MenuItem, TextField, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export const StackAnalysis = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
