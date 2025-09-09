@@ -4,6 +4,7 @@ import { Box, Button, IconButton, MenuItem, TextField } from "@mui/material";
 import { PieChart } from '@mui/x-charts/PieChart';
 import axios from "axios";
 import { useEffect, useState } from "react";
+import StackAnalysis from "./stack-analysis";
 
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -146,24 +147,15 @@ export function Tab0() {
                 height: '87vh',
             }}
         >
-            <Box
-                sx={{
-                    width: '100%',
-                    height: 'calc(50% - 0.5rem)',
-                    border: '1px solid gray',
-                    borderRadius: '0.5rem',
-                    mb: '1rem'
-                }}
-            >
-                histogram
-            </Box>
+            <StackAnalysis/>
             <Box
                 sx={{
                     width: '100%',
                     height: 'auto', // 'calc(50% - 0.5rem)',
                     border: '1px solid gray',
                     borderRadius: '0.5rem',
-                    mb: '1rem'
+                    mb: '1rem',
+                    mt: '1rem'
                 }}
             >
                 <Button
