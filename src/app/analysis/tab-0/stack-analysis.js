@@ -12,7 +12,7 @@ export const StackAnalysis = () => {
         'category2': [6, 7, 8, 9, 10],
         'category3': [15, 14, 13, 12, 11]
     });
-    const [orderedYM, setOrderedYM] = useState([0, 1, 2, 3, 4]);
+    const [orderedYM, setOrderedYM] = useState(["a", "b", "c", "d", "e"]);
 
     const handleCategoryChange = (event) => {
         const {
@@ -33,7 +33,7 @@ export const StackAnalysis = () => {
             let temp_ym = [];
             for (let i = 0; i < response.data.distinct_ym.length; i++) {
                 let temp = response.data.distinct_ym[i];
-                temp_ym.push(`${convertMonthIndex(temp[1])} ${toString(temp[0])}`);
+                temp_ym.push(`${convertMonthIndex(temp[1])} ${String(temp[0])}`);
             }
             setOrderedYM(temp_ym);
         }).catch((error) => {

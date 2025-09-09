@@ -45,6 +45,6 @@ export function convertMonthIndex(month) {
         11: 'November',
         12: 'December',
     }
-    let temp = months[toString(month)];
+    let temp = months[String(month)];
     return temp ? temp : "0";
 }
