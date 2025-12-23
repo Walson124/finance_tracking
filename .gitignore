@@ -43,3 +43,5 @@ next-env.d.ts
 *.dump
 
 certs
+
+package-lock.json
