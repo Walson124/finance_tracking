@@ -1,4 +1,5 @@
 import HeaderV2 from "./header/header_v2"
+import "./globals.css";
 
 export const metadata = {
 	title: {
@@ -14,10 +15,9 @@ export default function RootLayout({ children }) {
 			lang="en"
 		>
 			<head>
-				<link
-					href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-					rel="stylesheet"
-				/>
+				<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"/>
+				<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" />
+				<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" />
 			</head>
 			<body
 				style={{

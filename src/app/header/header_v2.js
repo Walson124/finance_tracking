@@ -22,7 +22,7 @@ export default function HeaderV2() {
 		<Box sx={{ width: "100%" }}>
 			<Box
 				sx={{
-					width: "calc(100% - 20px)",
+					width: "100%",
 					mb: "15px",
 					borderRadius: "15px",
 					minHeight: "25px",

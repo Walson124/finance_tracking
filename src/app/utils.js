@@ -18,6 +18,21 @@ export function generateRandomPastelColor() {
     return color;
 }
 
+export const MONTHS_STR = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+]
+
 export function convertMonthIndex(month) {
     const months = {
         'January': 1,
