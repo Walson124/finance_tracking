@@ -4,6 +4,9 @@ import { Box, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { LinearProgress } from "@mui/material";
 import SavingsIcon from '@mui/icons-material/Savings';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { convertMonthIndex, generateRandomPastelColor } from "../utils";
 
 export default function Goals() {
@@ -154,7 +157,7 @@ export default function Goals() {
                                     width: "15%",
                                 }}
                             >
-                                <SavingsIcon
+                                <HourglassTopIcon
                                     sx={{
                                         height: "100%",
                                         width: "100%",
@@ -193,7 +196,7 @@ export default function Goals() {
                                     width: "15%",
                                 }}
                             >
-                                <SavingsIcon
+                                <TrackChangesIcon
                                     sx={{
                                         height: "100%",
                                         width: "100%",
@@ -237,7 +240,7 @@ export default function Goals() {
                                     width: "15%",
                                 }}
                             >
-                                <SavingsIcon
+                                <CheckCircleIcon
                                     sx={{
                                         height: "100%",
                                         width: "100%",
