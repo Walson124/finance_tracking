@@ -60,10 +60,12 @@ export default function Goals() {
         var c = 0;
         for (let i = 0; i < response.length; i++) {
             let g = response[i];
-            t_s = g["progress"] + t_s;
-            t_g = g["goal"] + t_g;
             if (g["progress"] >= g["goal"])
                 c = c + 1;
+            else {
+                t_s = g["progress"] + t_s;
+                t_g = g["goal"] + t_g;
+            }
         }
         setTotalSaved(t_s);
         setTotalRemaining(t_g - t_s);
@@ -310,7 +312,7 @@ export default function Goals() {
                                                 ${goal["progress"]} / ${goal["goal"]}
                                             </Box>
                                             <Box
-                                                sx={{ 
+                                                sx={{
                                                     width: "calc(100% - 200px - 220px)",
                                                     mr: "40px",
                                                 }}
