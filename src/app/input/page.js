@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { BillInput } from "./bill-input";
 
 export const metadata = {
@@ -6,5 +7,15 @@ export const metadata = {
 }
 
 export default function Input() {
-    return (<BillInput />);
+    return (
+        <Box
+            sx={{
+                backgroundColor: 'white',
+                padding: '10px',
+                borderRadius: '15px',
+            }}
+        >
+            <BillInput/>
+        </Box>
+    )
 }

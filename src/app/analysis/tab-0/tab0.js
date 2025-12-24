@@ -144,7 +144,6 @@ export function Tab0() {
         <Box
             sx={{
                 width: '100%',
-                height: '87vh',
             }}
         >
             <StackAnalysis/>

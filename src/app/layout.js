@@ -23,7 +23,8 @@ export default function RootLayout({ children }) {
 				style={{
 					margin: 0,
 					// backgroundColor: '#e6e6fa'
-					backgroundColor: 'rgba(21, 23, 33, 1)',
+					backgroundColor: 'rgba(13, 14, 17, 1)',
+					padding: '15px',
 				}}
 			>
 				<HeaderV2 />
