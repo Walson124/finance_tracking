@@ -1,4 +1,4 @@
-import Header from "./header"
+import HeaderV2 from "./header/header_v2"
 
 export const metadata = {
 	title: {
@@ -22,12 +22,13 @@ export default function RootLayout({ children }) {
 			<body
 				style={{
 					margin: 0,
-					backgroundColor: '#e6e6fa'
+					// backgroundColor: '#e6e6fa'
+					backgroundColor: 'rgba(21, 23, 33, 1)',
 				}}
 			>
-				<Header />
+				<HeaderV2 />
 				<main
-					style={{ padding: '0.5rem' }}
+					style={{ padding: '0rem' }}
 				>
 					{children}
 				</main>
