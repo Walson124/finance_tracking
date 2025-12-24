@@ -1,11 +1,17 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 
 export function Tab1() {
     return (
         <Box>
-            tab 1
+            <TextField
+                size="small"
+                label="Ask me anything about your finances!"
+                sx={{
+                    width: "100%",
+                }}
+            />
         </Box>
     );
 }
