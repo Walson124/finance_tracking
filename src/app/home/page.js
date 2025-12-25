@@ -2,13 +2,14 @@
 
 import { Box } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-    const [safeToSpend, setSafeToSpend] = useState('123.45');
-    const [incomeThisMonth, setIncomeThisMonth] = useState('1234.56');
-    const [spentThisMonth, setSpentThisMonth] = useState('888.88');
-    const [billsDueSoon, setBillsDueSoon] = useState('3');
+    const [safeToSpend, setSafeToSpend] = useState('--');
+    const [incomeThisMonth, setIncomeThisMonth] = useState('--');
+    const [spentThisMonth, setSpentThisMonth] = useState('--');
+    const [billsDueSoon, setBillsDueSoon] = useState('--');
 
     const [months, setMonths] = useState([]); // e.g. ["Jan 2025", ...]
     const [income, setIncome] = useState([]);
@@ -31,8 +32,32 @@ export default function Home() {
         setMonths(last12.map((x) => x.label));
 
         // placeholder data (replace with API results)
-        setIncome(Array.from({ length: 12 }, () => Math.random()*10000));
-        setSpent(Array.from({ length: 12 }, () => Math.random()*10000));
+        setIncome(Array.from({ length: 12 }, () => 0));
+        setSpent(Array.from({ length: 12 }, () => 0));
+
+        let requestBody = {
+            "last12": last12
+        }
+        axios.post(
+            '/api/proxy/home/get_data',
+            requestBody
+        ).then((response) => {
+            if (response.data) {
+                // widget data
+                let widget_data = response.data["widgets"];
+                console.log(widget_data);
+                setSafeToSpend(widget_data["safe_to_spend"]);
+                setIncomeThisMonth(widget_data["income"]);
+                setSpentThisMonth(widget_data["spent"]);
+                setBillsDueSoon(widget_data["bills_due"]);
+                // cashflow data
+                let cashflow_data = response.data["cashflow"];
+                setIncome(cashflow_data["income"]);
+                setSpent(cashflow_data["spent"]);
+            }
+        }).catch((error) => {
+
+        });
     }, []);
 
     return (

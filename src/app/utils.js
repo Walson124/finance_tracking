@@ -63,3 +63,33 @@ export function convertMonthIndex(month) {
     let temp = months[month];
     return temp ? temp : "0";
 }
+
+/**
+ * Dark input textfield custom style
+ */
+export const darkFieldSx = {
+    "& .MuiInputBase-root": {
+        borderRadius: "15px",
+        backgroundColor: "rgb(20, 20, 20)",
+        color: "rgb(214, 214, 214)",
+        border: "0.5px solid rgb(66, 66, 66)",
+    },
+    "& .MuiInputBase-input": {
+        padding: "15px",
+    },
+    "& .MuiInputLabel-root": {
+        color: "rgb(160, 160, 160)",
+    },
+    "& .MuiInputLabel-root.Mui-focused": {
+        color: "rgb(214, 214, 214)",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+        border: "none", // important: remove the default outline
+    },
+    "& .MuiOutlinedInput-root:hover": {
+        borderColor: "rgb(120, 120, 120)",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused": {
+        boxShadow: "0 0 0 2px rgba(255,255,255,0.08)",
+    },
+};

@@ -11,6 +11,7 @@ import {
     Alert,
     Stack,
 } from "@mui/material";
+import { darkFieldSx } from "../utils";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -32,12 +33,23 @@ export default function LoginPage() {
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await res.json().catch(() => ({}));
+
             if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
                 throw new Error(data?.error || "Login failed");
             }
 
-            router.replace("/home");
+            // IMPORTANT: actually store it as a cookie the middleware can read
+            if (!data?.session) throw new Error("No session returned");
+
+            // Dev-friendly cookie (not HttpOnly). Middleware will see it.
+            document.cookie = `session=${encodeURIComponent(data.session)}; Path=/; SameSite=Lax`;
+
+            // Go where the middleware wanted you to go
+            const next =
+                new URLSearchParams(window.location.search).get("next") || "/home";
+
+            router.replace(next);
             router.refresh();
         } catch (err) {
             setError(err.message || "Login failed");
@@ -48,13 +60,22 @@ export default function LoginPage() {
     return (
         <Box
             sx={{
-                minHeight: "100vh",
                 display: "grid",
                 placeItems: "center",
                 p: 2,
             }}
         >
-            <Paper sx={{ p: 3, width: "100%", maxWidth: 420 }}>
+            <Paper
+                sx={{
+                    p: 3,
+                    width: "100%",
+                    maxWidth: 420,
+                    borderRadius: "18px",
+                    backgroundColor: "rgb(14, 14, 14)",
+                    border: "0.5px solid rgb(66, 66, 66)",
+                    color: "rgb(214, 214, 214)",
+                }}
+            >
                 <Typography variant="h5" sx={{ mb: 0.5 }}>
                     Welcome back
                 </Typography>
@@ -64,7 +85,18 @@ export default function LoginPage() {
 
                 <Box component="form" onSubmit={onSubmit}>
                     <Stack spacing={2}>
-                        {error ? <Alert severity="error">{error}</Alert> : null}
+                        {error ? (
+                            <Alert
+                                severity="error"
+                                sx={{
+                                    borderRadius: "12px",
+                                    backgroundColor: "rgba(255,0,0,0.08)",
+                                    color: "rgb(214,214,214)",
+                                }}
+                            >
+                                {error}
+                            </Alert>
+                        ) : null}
 
                         <TextField
                             label="Email"
@@ -74,6 +106,7 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             fullWidth
+                            sx={darkFieldSx}
                         />
 
                         <TextField
@@ -84,14 +117,22 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             fullWidth
+                            sx={darkFieldSx}
                         />
 
                         <Button
                             type="submit"
-                            variant="contained"
                             disabled={submitting}
                             fullWidth
-                            sx={{ py: 1.2 }}
+                            sx={{
+                                py: 1.2,
+                                borderRadius: "15px",
+                                textTransform: "none",
+                                backgroundColor: "rgb(40, 40, 40)",
+                                border: "0.5px solid rgb(66, 66, 66)",
+                                color: "rgb(214, 214, 214)",
+                                "&:hover": { backgroundColor: "rgb(55, 55, 55)" },
+                            }}
                         >
                             {submitting ? "Logging in..." : "Log in"}
                         </Button>

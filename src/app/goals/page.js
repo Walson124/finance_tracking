@@ -8,6 +8,7 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { convertMonthIndex, generateRandomPastelColor } from "../utils";
+import axios from "axios";
 
 export default function Goals() {
     const [showCompleted, setShowCompleted] = useState(false);
@@ -28,49 +29,35 @@ export default function Goals() {
     }, [goals]);
 
     useEffect(() => {
-        // call endpoint
-        let response = [
-            {
-                "name": "House Down Payment",
-                "goal": 80000,
-                "progress": 20000,
-                "monthly": 1000,
-                "target_month": 7,
-                "target_year": 2028
-            },
-            {
-                "name": "Vacation Fund",
-                "goal": 5000,
-                "progress": 1200,
-                "monthly": 300,
-                "target_month": 7,
-                "target_year": 2025
-            },
-            {
-                "name": "Taycan Turbo",
-                "goal": 76000,
-                "progress": 76000,
-                "monthly": 0,
-                "target_month": 12,
-                "target_year": 2025
-            },
-        ]
-        var t_s = 0;
-        var t_g = 0;
-        var c = 0;
-        for (let i = 0; i < response.length; i++) {
-            let g = response[i];
-            if (g["progress"] >= g["goal"])
-                c = c + 1;
-            else {
-                t_s = g["progress"] + t_s;
-                t_g = g["goal"] + t_g;
-            }
+        let requestBody = {
+            "user": "dev"
         }
-        setTotalSaved(t_s);
-        setTotalRemaining(t_g - t_s);
-        setTotalCompleted(c);
-        setGoals(response);
+        axios.post(
+            '/api/proxy/goals/get_data',
+            requestBody
+        ).then((response) => {
+            if (response.data) {
+                let goal_data = response.data["goal_data"];
+                var t_s = 0;
+                var t_g = 0;
+                var c = 0;
+                for (let i = 0; i < goal_data.length; i++) {
+                    let g = goal_data[i];
+                    if (g["progress"] >= g["goal"])
+                        c = c + 1;
+                    else {
+                        t_s = g["progress"] + t_s;
+                        t_g = g["goal"] + t_g;
+                    }
+                }
+                setTotalSaved(t_s);
+                setTotalRemaining(t_g - t_s);
+                setTotalCompleted(c);
+                setGoals(goal_data);
+            }
+        }).catch((error) => {
+
+        });
     }, []);
 
     return (

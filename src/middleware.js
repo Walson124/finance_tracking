@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const PUBLIC_PATHS = ["/login"];
 
-export function middleware(req) {
+export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   // Allow Next internals / static files
@@ -26,13 +26,13 @@ export function middleware(req) {
   }
 
   // Require session cookie everywhere else
-  // const session = req.cookies.get("session")?.value;
-  // if (!session) {
-  //   const url = req.nextUrl.clone();
-  //   url.pathname = "/login";
-  //   url.searchParams.set("next", pathname);
-  //   return NextResponse.redirect(url);
-  // }
+  const session = await req.cookies.get("session")?.value;
+  if (!session) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 }
