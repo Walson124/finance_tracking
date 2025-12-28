@@ -29,7 +29,21 @@ export default function IncomeInput({
     useEffect(() => {
         if (user && year) {
             if (incomeData && incomeData[user] && incomeData[user][year]) {
-                setIncomeView(incomeData[user][year]);
+                let temp = incomeData[user][year];
+                setIncomeView({
+                    "January": temp["January"] || 0,
+                    "February": temp["February"] || 0,
+                    "March": temp["March"] || 0,
+                    "April": temp["April"] || 0,
+                    "May": temp["May"] || 0,
+                    "June": temp["June"] || 0,
+                    "July": temp["July"] || 0,
+                    "August": temp["August"] || 0,
+                    "September": temp["September"] || 0,
+                    "October": temp["October"] || 0,
+                    "November": temp["November"] || 0,
+                    "December": temp["December"] || 0,
+                })
             } else {
                 setIncomeView({
                     "January": 0,
