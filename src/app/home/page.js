@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { convertMonthIndex } from "../utils";
 
 export default function Home() {
     const [safeToSpend, setSafeToSpend] = useState('--');
@@ -21,9 +22,11 @@ export default function Home() {
         // oldest -> newest (last 12 months)
         const last12 = Array.from({ length: 12 }, (_, i) => {
             const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
+            tempMonth = d.getMonth();
             return {
                 label: d.toLocaleString("en-US", { month: "short" }),
-                monthIndex: d.getMonth(),
+                fullMonth: convertMonthIndex(tempMonth),
+                monthIndex: tempMonth,
                 year: d.getFullYear(),
                 key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
             };
