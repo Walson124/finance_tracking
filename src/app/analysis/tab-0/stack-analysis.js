@@ -55,6 +55,7 @@ export const StackAnalysis = () => {
                 <Typography
                     sx={{
                         mr: '1rem',
+                        color: 'black',
                     }}
                 >
                     Monthly Spending Chart:

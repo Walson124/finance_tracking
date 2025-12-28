@@ -331,7 +331,6 @@ export function BillInput() {
                 </Box>
             </Box>
             {/* ALL THE BILLS HERE --> */}
-            {bills.length > 0 && <hr></hr>}
             <Box
                 sx={{
                     display: 'flex',
@@ -454,7 +453,6 @@ export function BillInput() {
                 ))}
             </Box>
             {/* CATEGORIES HERE --> */}
-            <hr></hr>
             {bills.length > 0 &&
                 <Box>
                     <Box

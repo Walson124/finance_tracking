@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { AnalysisMain } from "./analysis-main";
 
 export const metadata = {
@@ -6,5 +7,15 @@ export const metadata = {
 }
 
 export default function Analysis() {
-    return (<AnalysisMain />);
+    return (
+        <Box
+            sx={{
+                backgroundColor: 'white',
+                padding: '10px',
+                borderRadius: '15px',
+            }}
+        >
+            <AnalysisMain/>
+        </Box>
+    )
 }
