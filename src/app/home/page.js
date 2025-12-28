@@ -22,7 +22,7 @@ export default function Home() {
         // oldest -> newest (last 12 months)
         const last12 = Array.from({ length: 12 }, (_, i) => {
             const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
-            tempMonth = d.getMonth();
+            let tempMonth = d.getMonth();
             return {
                 label: d.toLocaleString("en-US", { month: "short" }),
                 fullMonth: convertMonthIndex(tempMonth),
