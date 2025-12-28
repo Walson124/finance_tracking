@@ -3,7 +3,6 @@
 import { Box, Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { convertMonthIndex } from "../utils";
 
 export default function IncomeInput({
     users
@@ -33,18 +32,18 @@ export default function IncomeInput({
                 setIncomeView(incomeData[user][year]);
             } else {
                 setIncomeView({
-                    0: 0,
-                    1: 0,
-                    2: 0,
-                    3: 0,
-                    4: 0,
-                    5: 0,
-                    6: 0,
-                    7: 0,
-                    8: 0,
-                    9: 0,
-                    10: 0,
-                    11: 0,
+                    "January": 0,
+                    "February": 0,
+                    "March": 0,
+                    "April": 0,
+                    "May": 0,
+                    "June": 0,
+                    "July": 0,
+                    "August": 0,
+                    "September": 0,
+                    "October": 0,
+                    "November": 0,
+                    "December": 0,
                 })
             }
         } else {
@@ -178,14 +177,14 @@ export default function IncomeInput({
                                     mb: '5px',
                                 }}
                             >
-                                {convertMonthIndex(parseInt(m) + 1)}
+                                {m}
                             </Box>
                             <TextField
-                                value={incomeView[index] ?? ""}
+                                value={incomeView[m] ?? ""}
                                 onChange={(e) =>
                                     setIncomeView(prev => ({
                                         ...prev,
-                                        [index]: e.target.value,
+                                        [m]: e.target.value,
                                     }))
                                 }
                                 sx={{
