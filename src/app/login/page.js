@@ -27,7 +27,7 @@ export default function LoginPage() {
         setSubmitting(true);
 
         try {
-            const res = await fetch("/api/proxy/login", {
+            const res = await fetch("/api/proxy/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
