@@ -181,11 +181,13 @@ export default function IncomeInput({
                                 {convertMonthIndex(parseInt(m) + 1)}
                             </Box>
                             <TextField
-                                value={incomeView[m]}
-                                onChange={(e) => setIncomeView(prevState => {
-                                    prevState[index] = e.target.value;
-                                    return prevState;
-                                })}
+                                value={incomeView[index] ?? ""}
+                                onChange={(e) =>
+                                    setIncomeView(prev => ({
+                                        ...prev,
+                                        [index]: e.target.value,
+                                    }))
+                                }
                                 sx={{
                                     p: 0,
                                     m: 0,
