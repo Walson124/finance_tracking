@@ -12,7 +12,9 @@ import { useEffect, useState } from "react";
 import { BillObject } from "../objects/bill-object";
 import { generateRandomPastelColor } from "../utils";
 
-export function BillInput() {
+export function BillInput({
+    users
+}) {
 
     const [bills, setBills] = useState([]);
     const [inputBillUser, setInputBillUser] = useState("default");
@@ -42,16 +44,8 @@ export function BillInput() {
         setColors(generatedColors);
     }, [categories]);
 
-    // loading on db to get users
     useEffect(() => {
-        axios.get(
-            '/api/proxy/general/get_users'
-        ).then(response => {
-            console.log('users response:', response.data);
-            setUserOptions(response.data);
-        }).catch(error => {
-            console.error("Error fetching users:", error);
-        });
+        setUserOptions(users);
     }, []);
 
     // loading from db based on month/year
