@@ -3,6 +3,7 @@
 import { Box, Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { convertMonthIndex } from "../utils";
 
 export default function IncomeInput({
     users
@@ -11,7 +12,8 @@ export default function IncomeInput({
     const [user, setUser] = useState("");
     const [year, setYear] = useState("");
 
-    const [incomeData, setIncomeData] = useState([]);
+    const [incomeData, setIncomeData] = useState({});
+    const [incomeView, setIncomeView] = useState({})
 
     useEffect(() => {
         setUserOptions(users);
@@ -19,55 +21,182 @@ export default function IncomeInput({
             '/api/proxy/insert/get_income'
         ).then(response => {
             console.log('get_income response:', response.data);
+            setIncomeData(response.data);
         }).catch(error => {
             console.error("Error fetching income:", error);
         });
     }, []);
 
+    useEffect(() => {
+        if (user && year) {
+            if (incomeData && incomeData[user] && incomeData[user][year]) {
+                setIncomeView(incomeData[user][year]);
+            } else {
+                setIncomeView({
+                    0: 0,
+                    1: 0,
+                    2: 0,
+                    3: 0,
+                    4: 0,
+                    5: 0,
+                    6: 0,
+                    7: 0,
+                    8: 0,
+                    9: 0,
+                    10: 0,
+                    11: 0,
+                })
+            }
+        } else {
+            setIncomeView({});
+        }
+    }, [user, year])
+
+    function saveIncome() {
+        let requestBody = {
+            "user": user,
+            "year": year,
+            "income": incomeView,
+        }
+        axios.post(
+            '/api/proxy/insert/save_income',
+            requestBody
+        ).then(response => {
+            console.log('save_income response:', response.data);
+        }).catch(error => {
+            console.error("Error saving income:", error);
+        });
+    }
+
     return (
-        <Box>
-            <Box>
-                <TextField
-                    label="User"
-                    value={user}
-                    select={true}
-                    size="small"
+        <Box
+            sx={{
+                width: '100%',
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}
+            >
+                <Box
                     sx={{
-                        minWidth: '100px',
-                        backgroundColor: 'white',
-                        borderRadius: '10px',
-                        mb: '10px',
-                        mr: '10px',
+                        display: 'flex',
+                        flexDirection: 'row',
                     }}
                 >
-                    <MenuItem value={""} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }} />
-                    {userOptions.map((u, index) => (
-                        <MenuItem key={index} value={u}>{u}</MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    label="Year"
-                    value={year}
-                    select={true}
-                    size="small"
+                    <Box>
+                        <TextField
+                            label="User"
+                            value={user}
+                            select={true}
+                            size="small"
+                            sx={{
+                                minWidth: '100px',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                                mr: '10px',
+                            }}
+                            onChange={(e) => setUser(e.target.value)}
+                        >
+                            <MenuItem value={""} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }} />
+                            {userOptions.map((u, index) => (
+                                <MenuItem key={index} value={u}>{u}</MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                    <Box>
+                        <TextField
+                            label="Year"
+                            value={year}
+                            select={true}
+                            size="small"
+                            sx={{
+                                minWidth: '100px',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                            }}
+                            onChange={(e) => setYear(e.target.value)}
+                        >
+                            <MenuItem value={""} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }} />
+                            {Array.from({ length: 2030 - 2020 + 1 }, (_, i) => 2030 - i).map((year) => (
+                                <MenuItem key={year} value={year} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }}>
+                                    {year}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Box>
+                </Box>
+                <Box
                     sx={{
-                        minWidth: '100px',
-                        backgroundColor: 'white',
-                        borderRadius: '10px',
-                        mb: '10px',
+                        flexGrow: 1,
+                        textAlign: 'right',
+                        alignItems: 'end',
+                        height: '100%',
                     }}
                 >
-                    <MenuItem value={""} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }} />
-                    {Array.from({ length: 2030 - 2020 + 1 }, (_, i) => 2030 - i).map((year) => (
-                        <MenuItem key={year} value={year} sx={{ fontSize: "0.8rem", minHeight: 28, py: 0.25 }}>
-                            {year}
-                        </MenuItem>
+                    <Button
+                        variant="contained"
+                        onClick={() => saveIncome()}
+                        sx={{
+                            borderRadius: '10px',
+                        }}
+                    >
+                        Save
+                    </Button>
+                </Box>
+            </Box>
+            {user && year &&
+                <Box
+                    sx={{
+                        mt: '10px',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flexWrap: "wrap",
+                        width: '100%',
+                        borderRadius: '15px',
+                        backgroundColor: 'white',
+                        padding: '10px',
+                        color: 'black',
+                        gap: '10px',
+                    }}
+                >
+                    {Object.keys(incomeView).map((m, index) => (
+                        <Box
+                            key={index}
+                            sx={{
+                                width: 'fit-content',
+                                borderRadius: '15px',
+                                padding: '10px',
+                                border: '0.5px solid rgba(13, 14, 17, 1)',
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    mb: '5px',
+                                }}
+                            >
+                                {convertMonthIndex(parseInt(m) + 1)}
+                            </Box>
+                            <TextField
+                                value={incomeView[m]}
+                                onChange={(e) => setIncomeView(prevState => {
+                                    prevState[index] = e.target.value;
+                                    return prevState;
+                                })}
+                                sx={{
+                                    p: 0,
+                                    m: 0,
+                                    width: '80px'
+                                }}
+                                size="small"
+                            />
+                        </Box>
                     ))}
-                </TextField>
-            </Box>
-            <Box>
-                lol all the inputs
-            </Box>
-        </Box>
+                </Box>
+            }
+        </Box >
     )
 }
