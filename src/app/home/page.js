@@ -121,6 +121,7 @@ export default function Home() {
                 console.log(response.data);
                 // widget data
                 let widget_data = response.data["widgets"];
+                setWidgetData(widget_data);
                 // cashflow data
                 let cashflow_data = response.data["cashflow"];
                 setIncome(cashflow_data["income"]);
