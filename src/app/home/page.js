@@ -55,6 +55,34 @@ export default function Home() {
             "prepend": "%"
         },
     ]);
+    useEffect(() => {
+        setWidgetsUsed([
+            {
+                "name": "Income",
+                "val": widgetData["income_total_12m"] ? toString(widgetData["income_total_12m"]) : "--",
+                "unit": "This year",
+                "prepend": "$"
+            },
+            {
+                "name": "Spent",
+                "val": widgetData["spent_total_12m"] ? toString(widgetData["spent_total_12m"]) : "--",
+                "unit": "This year",
+                "prepend": "$"
+            },
+            {
+                "name": "Net Change",
+                "val": widgetData["net_total_12m"] ? toString(widgetData["net_total_12m"]) : "--",
+                "unit": "This year",
+                "prepend": "$"
+            },
+            {
+                "name": "Burn Rate",
+                "val": widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--",
+                "unit": "Last 3 months",
+                "prepend": "%"
+            },
+        ]);
+    }, [widgetData]);
 
     const [months, setMonths] = useState([]); // e.g. ["Jan 2025", ...]
     const [income, setIncome] = useState([]);
@@ -93,7 +121,6 @@ export default function Home() {
                 console.log(response.data);
                 // widget data
                 let widget_data = response.data["widgets"];
-                setWidgetData(widget_data);
                 // cashflow data
                 let cashflow_data = response.data["cashflow"];
                 setIncome(cashflow_data["income"]);
