@@ -32,19 +32,19 @@ export default function Home() {
     const [widgetsUsed, setWidgetsUsed] = useState([
         {
             "name": "Income",
-            "val": widgetData["income_total_12m"] ? toString(widgetData["income_total_12m"]) : "--",
+            "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
             "name": "Spent",
-            "val": widgetData["spent_total_12m"] ? toString(widgetData["spent_total_12m"]) : "--",
+            "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
             "name": "Net Change",
-            "val": widgetData["net_total_12m"] ? toString(widgetData["net_total_12m"]) : "--",
+            "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
@@ -59,19 +59,19 @@ export default function Home() {
         setWidgetsUsed([
             {
                 "name": "Income",
-                "val": widgetData["income_total_12m"] ? toString(widgetData["income_total_12m"]) : "--",
+                "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
             {
                 "name": "Spent",
-                "val": widgetData["spent_total_12m"] ? toString(widgetData["spent_total_12m"]) : "--",
+                "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
             {
                 "name": "Net Change",
-                "val": widgetData["net_total_12m"] ? toString(widgetData["net_total_12m"]) : "--",
+                "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
