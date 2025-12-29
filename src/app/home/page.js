@@ -30,10 +30,30 @@ export default function Home() {
      */
     const [widgetData, setWidgetData] = useState({});
     const [widgetsUsed, setWidgetsUsed] = useState([
-        { "name": "income_total_12m", "val": widgetData["income_total_12m"] || "--", "unit": "This year", "prepend": "$" },
-        { "name": "spent_total_12m", "val": widgetData["spent_total_12m"] || "--", "unit": "This year", "prepend": "$" },
-        { "name": "net_total_12m", "val": widgetData["net_total_12m"] || "--", "unit": "This year", "prepend": "$" },
-        { "name": "burn_rate_3m", "val": ((widgetData["burn_rate_3m"] || 0) * 100).toFixed(2), "unit": "This month", "prepend": "%" },
+        {
+            "name": "income_total_12m",
+            "val": widgetData["income_total_12m"] ? toString(widgetData["income_total_12m"]) : "--",
+            "unit": "This year",
+            "prepend": "$"
+        },
+        {
+            "name": "spent_total_12m",
+            "val": widgetData["spent_total_12m"] ? toString(widgetData["spent_total_12m"]) : "--",
+            "unit": "This year",
+            "prepend": "$"
+        },
+        {
+            "name": "net_total_12m",
+            "val": widgetData["net_total_12m"] ? toString(widgetData["net_total_12m"]) : "--",
+            "unit": "This year",
+            "prepend": "$"
+        },
+        {
+            "name": "burn_rate_3m",
+            "val": widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--",
+            "unit": "This month",
+            "prepend": "%"
+        },
     ]);
 
     const [months, setMonths] = useState([]); // e.g. ["Jan 2025", ...]
@@ -74,7 +94,6 @@ export default function Home() {
                 // widget data
                 let widget_data = response.data["widgets"];
                 setWidgetData(widget_data);
-                // console.log(widget_data);
                 // cashflow data
                 let cashflow_data = response.data["cashflow"];
                 setIncome(cashflow_data["income"]);
