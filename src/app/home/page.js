@@ -25,7 +25,7 @@ export default function Home() {
             let tempMonth = d.getMonth();
             return {
                 label: d.toLocaleString("en-US", { month: "short" }),
-                fullMonth: convertMonthIndex(tempMonth),
+                fullMonth: convertMonthIndex(tempMonth + 1),
                 monthIndex: tempMonth,
                 year: d.getFullYear(),
                 key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
