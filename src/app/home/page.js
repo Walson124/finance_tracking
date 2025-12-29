@@ -7,10 +7,34 @@ import { useEffect, useState } from "react";
 import { convertMonthIndex } from "../utils";
 
 export default function Home() {
-    const [safeToSpend, setSafeToSpend] = useState('--');
-    const [incomeThisMonth, setIncomeThisMonth] = useState('--');
-    const [spentThisMonth, setSpentThisMonth] = useState('--');
-    const [billsDueSoon, setBillsDueSoon] = useState('--');
+    /**
+        burn_rate_3m,
+        burn_rate_last_month,
+        income_avg_3m,
+        income_last_month,
+        income_mom_delta,
+        income_mom_pct,
+        income_total_12m,
+        net_avg_3m,
+        net_last_month,
+        net_mom_delta,
+        net_mom_pct,
+        net_total_12m,
+        savings_rate_3m,
+        savings_rate_last_month,
+        spent_avg_3m,
+        spent_last_month,
+        spent_mom_delta,
+        spent_mom_pct,
+        spent_total_12m,
+     */
+    const [widgetData, setWidgetData] = useState({});
+    const [widgetsUsed, setWidgetsUsed] = useState([
+        { "name": "income_total_12m", "val": widgetData["income_total_12m"] || "--", "unit": "This year", "prepend": "$" },
+        { "name": "spent_total_12m", "val": widgetData["spent_total_12m"] || "--", "unit": "This year", "prepend": "$" },
+        { "name": "net_total_12m", "val": widgetData["net_total_12m"] || "--", "unit": "This year", "prepend": "$" },
+        { "name": "burn_rate_3m", "val": ((widgetData["burn_rate_3m"] || 0) * 100).toFixed(2), "unit": "This month", "prepend": "%" },
+    ]);
 
     const [months, setMonths] = useState([]); // e.g. ["Jan 2025", ...]
     const [income, setIncome] = useState([]);
@@ -49,11 +73,8 @@ export default function Home() {
                 console.log(response.data);
                 // widget data
                 let widget_data = response.data["widgets"];
-                console.log(widget_data);
-                setSafeToSpend(widget_data["safe_to_spend"]);
-                setIncomeThisMonth(widget_data["income"]);
-                setSpentThisMonth(widget_data["spent"]);
-                setBillsDueSoon(widget_data["bills_due"]);
+                setWidgetData(widget_data);
+                // console.log(widget_data);
                 // cashflow data
                 let cashflow_data = response.data["cashflow"];
                 setIncome(cashflow_data["income"]);
@@ -116,18 +137,18 @@ export default function Home() {
                                 }}
                             />
                             <Box>
-                                Safe-to-spend
+                                {widgetsUsed[0]["name"]}
                             </Box>
                         </Box>
                         <Box>
-                            ${safeToSpend}
+                            {widgetsUsed[0]["prepend"]}{widgetsUsed[0]["val"]}
                         </Box>
                         <Box
                             sx={{
                                 fontSize: '70%',
                             }}
                         >
-                            This week
+                            {widgetsUsed[0]["unit"]}
                         </Box>
                     </Box>
                     <Box
@@ -157,18 +178,18 @@ export default function Home() {
                                 }}
                             />
                             <Box>
-                                Income
+                                {widgetsUsed[1]["name"]}
                             </Box>
                         </Box>
                         <Box>
-                            ${incomeThisMonth}
+                            {widgetsUsed[1]["prepend"]}{widgetsUsed[1]["val"]}
                         </Box>
                         <Box
                             sx={{
                                 fontSize: '70%',
                             }}
                         >
-                            This month
+                            {widgetsUsed[1]["unit"]}
                         </Box>
                     </Box>
                     <Box
@@ -198,18 +219,18 @@ export default function Home() {
                                 }}
                             />
                             <Box>
-                                Spent
+                                {widgetsUsed[2]["name"]}
                             </Box>
                         </Box>
                         <Box>
-                            ${spentThisMonth}
+                            {widgetsUsed[2]["prepend"]}{widgetsUsed[2]["val"]}
                         </Box>
                         <Box
                             sx={{
                                 fontSize: '70%',
                             }}
                         >
-                            This month
+                            {widgetsUsed[2]["unit"]}
                         </Box>
                     </Box>
                     <Box
@@ -239,18 +260,18 @@ export default function Home() {
                                 }}
                             />
                             <Box>
-                                Bills Due
+                                {widgetsUsed[3]["name"]}
                             </Box>
                         </Box>
                         <Box>
-                            {billsDueSoon}
+                            {widgetsUsed[3]["prepend"]}{widgetsUsed[3]["val"]}
                         </Box>
                         <Box
                             sx={{
                                 fontSize: '70%',
                             }}
                         >
-                            Next 7 days
+                            {widgetsUsed[3]["unit"]}
                         </Box>
                     </Box>
                 </Box>
