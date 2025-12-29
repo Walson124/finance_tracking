@@ -46,6 +46,7 @@ export default function Home() {
             requestBody
         ).then((response) => {
             if (response.data) {
+                console.log(response.data);
                 // widget data
                 let widget_data = response.data["widgets"];
                 console.log(widget_data);
