@@ -32,19 +32,19 @@ export default function Home() {
     const [widgetsUsed, setWidgetsUsed] = useState([
         {
             "name": "Income",
-            "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toString() : "--",
+            "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toFixed(2).toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
             "name": "Spent",
-            "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toString() : "--",
+            "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toFixed(2).toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
             "name": "Net Change",
-            "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toString() : "--",
+            "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toFixed(2).toString() : "--",
             "unit": "This year",
             "prepend": "$"
         },
@@ -59,19 +59,19 @@ export default function Home() {
         setWidgetsUsed([
             {
                 "name": "Income",
-                "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toString() : "--",
+                "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toFixed(2).toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
             {
                 "name": "Spent",
-                "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toString() : "--",
+                "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toFixed(2).toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
             {
                 "name": "Net Change",
-                "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toString() : "--",
+                "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toFixed(2).toString() : "--",
                 "unit": "This year",
                 "prepend": "$"
             },
@@ -155,6 +155,7 @@ export default function Home() {
                         gap: '10px',
                         marginBottom: '10px',
                         width: '100%',
+                        flexWrap: 'wrap',
                     }}
                 >
                     <Box
@@ -162,7 +163,8 @@ export default function Home() {
                             borderRadius: '15px',
                             backgroundColor: 'rgb(20, 20, 20)',
                             padding: '10px',
-                            width: '25%',
+                            flexGrow: 1,
+                            maxWidth: '25%',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -203,7 +205,8 @@ export default function Home() {
                             borderRadius: '15px',
                             backgroundColor: 'rgb(20, 20, 20)',
                             padding: '10px',
-                            width: '25%',
+                            flexGrow: 1,
+                            maxWidth: '25%',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -244,7 +247,8 @@ export default function Home() {
                             borderRadius: '15px',
                             backgroundColor: 'rgb(20, 20, 20)',
                             padding: '10px',
-                            width: '25%',
+                            flexGrow: 1,
+                            maxWidth: '25%',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -285,7 +289,8 @@ export default function Home() {
                             borderRadius: '15px',
                             backgroundColor: 'rgb(20, 20, 20)',
                             padding: '10px',
-                            width: '25%',
+                            flexGrow: 1,
+                            maxWidth: '25%',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
