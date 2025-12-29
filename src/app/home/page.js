@@ -165,6 +165,7 @@ export default function Home() {
                             padding: '10px',
                             flexGrow: 1,
                             maxWidth: '25%',
+                            minWidth: '100px',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -207,6 +208,7 @@ export default function Home() {
                             padding: '10px',
                             flexGrow: 1,
                             maxWidth: '25%',
+                            minWidth: '100px',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -249,6 +251,7 @@ export default function Home() {
                             padding: '10px',
                             flexGrow: 1,
                             maxWidth: '25%',
+                            minWidth: '100px',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
@@ -291,6 +294,7 @@ export default function Home() {
                             padding: '10px',
                             flexGrow: 1,
                             maxWidth: '25%',
+                            minWidth: '100px',
                             border: '0.5px solid rgb(66, 66, 66)',
                         }}
                     >
