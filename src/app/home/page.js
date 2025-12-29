@@ -31,27 +31,27 @@ export default function Home() {
     const [widgetData, setWidgetData] = useState({});
     const [widgetsUsed, setWidgetsUsed] = useState([
         {
-            "name": "income_total_12m",
+            "name": "Income",
             "val": widgetData["income_total_12m"] ? toString(widgetData["income_total_12m"]) : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
-            "name": "spent_total_12m",
+            "name": "Spent",
             "val": widgetData["spent_total_12m"] ? toString(widgetData["spent_total_12m"]) : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
-            "name": "net_total_12m",
+            "name": "Net Change",
             "val": widgetData["net_total_12m"] ? toString(widgetData["net_total_12m"]) : "--",
             "unit": "This year",
             "prepend": "$"
         },
         {
-            "name": "burn_rate_3m",
+            "name": "Burn Rate",
             "val": widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--",
-            "unit": "This month",
+            "unit": "Last 3 months",
             "prepend": "%"
         },
     ]);
