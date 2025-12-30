@@ -46,7 +46,7 @@ export function BillInput({
 
     useEffect(() => {
         setUserOptions(users);
-    }, []);
+    }, [users]);
 
     // loading from db based on month/year
     useEffect(() => {

@@ -15,7 +15,6 @@ export default function IncomeInput({
     const [incomeView, setIncomeView] = useState({})
 
     useEffect(() => {
-        setUserOptions(users);
         axios.get(
             '/api/proxy/insert/get_income'
         ).then(response => {
@@ -25,6 +24,10 @@ export default function IncomeInput({
             console.error("Error fetching income:", error);
         });
     }, []);
+
+    useEffect(() => {
+        setUserOptions(users);
+    }, [users])
 
     useEffect(() => {
         if (user && year) {
