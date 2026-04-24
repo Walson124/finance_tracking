@@ -82,7 +82,8 @@ export function BillInput({
                     'Transportation',
                     'Utilities/Rent',
                     'Household Goods/Home Improvement',
-                    'Personal Items'
+                    'Personal Items',
+                    'Vacations'
                 ]);
             }
         }).catch(error => {
@@ -95,7 +96,8 @@ export function BillInput({
                 'Transportation',
                 'Utilities/Rent',
                 'Household Goods/Home Improvement',
-                'Personal Items'
+                'Personal Items',
+                'Vacations'
             ]);
         });
     }, [month, year]);
