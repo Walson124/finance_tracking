@@ -22,8 +22,8 @@ export async function POST(req) {
             httpOnly: true,
             sameSite: 'lax',
             path: '/',
-            maxAge: 60 * 60 * 24 * 30, // 30 days
-            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 30,
+            // secure: false — app runs over plain HTTP; set to true only when HTTPS is configured
         });
         return response;
     } catch (err) {
