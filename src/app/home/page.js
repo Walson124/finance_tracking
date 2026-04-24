@@ -1,6 +1,6 @@
 "use client"
 
-import { Box } from "@mui/material";
+import { Alert, Box, CircularProgress, Snackbar } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -29,60 +29,15 @@ export default function Home() {
         spent_total_12m,
      */
     const [widgetData, setWidgetData] = useState({});
-    const [widgetsUsed, setWidgetsUsed] = useState([
-        {
-            "name": "Income",
-            "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toFixed(2).toString() : "--",
-            "unit": "This year",
-            "prepend": "$"
-        },
-        {
-            "name": "Spent",
-            "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toFixed(2).toString() : "--",
-            "unit": "This year",
-            "prepend": "$"
-        },
-        {
-            "name": "Net Change",
-            "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toFixed(2).toString() : "--",
-            "unit": "This year",
-            "prepend": "$"
-        },
-        {
-            "name": "Burn Rate",
-            "val": widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--",
-            "unit": "Last 3 months",
-            "prepend": "%"
-        },
-    ]);
-    useEffect(() => {
-        setWidgetsUsed([
-            {
-                "name": "Income",
-                "val": widgetData["income_total_12m"] ? widgetData["income_total_12m"].toFixed(2).toString() : "--",
-                "unit": "This year",
-                "prepend": "$"
-            },
-            {
-                "name": "Spent",
-                "val": widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toFixed(2).toString() : "--",
-                "unit": "This year",
-                "prepend": "$"
-            },
-            {
-                "name": "Net Change",
-                "val": widgetData["net_total_12m"] ? widgetData["net_total_12m"].toFixed(2).toString() : "--",
-                "unit": "This year",
-                "prepend": "$"
-            },
-            {
-                "name": "Burn Rate",
-                "val": widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--",
-                "unit": "Last 3 months",
-                "prepend": "%"
-            },
-        ]);
-    }, [widgetData]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    const widgetsUsed = [
+        { name: "Income", val: widgetData["income_total_12m"] ? widgetData["income_total_12m"].toFixed(2) : "--", unit: "This year", prepend: "$", color: "rgba(36, 178, 255, 1)" },
+        { name: "Spent", val: widgetData["spent_total_12m"] ? widgetData["spent_total_12m"].toFixed(2) : "--", unit: "This year", prepend: "$", color: "rgba(36, 255, 149, 1)" },
+        { name: "Net Change", val: widgetData["net_total_12m"] ? widgetData["net_total_12m"].toFixed(2) : "--", unit: "This year", prepend: "$", color: "rgba(255, 124, 126, 1)" },
+        { name: "Burn Rate", val: widgetData["burn_rate_3m"] ? (widgetData["burn_rate_3m"] * 100).toFixed(2) : "--", unit: "Last 3 months", prepend: "%", color: "rgba(255, 237, 98, 1)" },
+    ];
 
     const [months, setMonths] = useState([]); // e.g. ["Jan 2025", ...]
     const [income, setIncome] = useState([]);
@@ -113,40 +68,31 @@ export default function Home() {
         let requestBody = {
             "last12": last12
         }
-        axios.post(
-            '/api/proxy/home/get_data',
-            requestBody
-        ).then((response) => {
-            if (response.data) {
-                console.log(response.data);
-                // widget data
-                let widget_data = response.data["widgets"];
-                setWidgetData(widget_data);
-                // cashflow data
-                let cashflow_data = response.data["cashflow"];
-                setIncome(cashflow_data["income"]);
-                setSpent(cashflow_data["spent"]);
-            }
-        }).catch((error) => {
-
-        });
+        axios.post('/api/proxy/home/get_data', requestBody)
+            .then((response) => {
+                if (response.data) {
+                    setWidgetData(response.data["widgets"] || {});
+                    const cashflow = response.data["cashflow"] || {};
+                    setIncome(cashflow["income"] || Array(12).fill(0));
+                    setSpent(cashflow["spent"] || Array(12).fill(0));
+                }
+            })
+            .catch(() => setError("Failed to load dashboard data."))
+            .finally(() => setLoading(false));
     }, []);
 
     return (
-        <Box
-            sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                color: 'rgb(214, 214, 214)',
-            }}
-        >
-            <Box
-                sx={{
-                    // width: '70%',
-                    width: '100%',
-                }}
-            >
+        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', color: 'rgb(214, 214, 214)' }}>
+            <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError("")} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+                <Alert severity="error" onClose={() => setError("")}>{error}</Alert>
+            </Snackbar>
+            <Box sx={{ width: '100%' }}>
+                {loading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                        <CircularProgress sx={{ color: 'rgb(214, 214, 214)' }} />
+                    </Box>
+                ) : (
+                <>
                 <Box
                     sx={{
                         display: 'flex',
@@ -158,178 +104,27 @@ export default function Home() {
                         flexWrap: 'wrap',
                     }}
                 >
-                    <Box
-                        sx={{
-                            borderRadius: '15px',
-                            backgroundColor: 'rgb(20, 20, 20)',
-                            padding: '10px',
-                            flexGrow: 1,
-                            maxWidth: '25%',
-                            minWidth: '100px',
-                            border: '0.5px solid rgb(66, 66, 66)',
-                        }}
-                    >
+                    {widgetsUsed.map((w) => (
                         <Box
+                            key={w.name}
                             sx={{
-                                fontSize: '70%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '0.3rem',
-                                marginBottom: '0.3rem',
+                                borderRadius: '15px',
+                                backgroundColor: 'rgb(20, 20, 20)',
+                                padding: '10px',
+                                flexGrow: 1,
+                                maxWidth: '25%',
+                                minWidth: '100px',
+                                border: '0.5px solid rgb(66, 66, 66)',
                             }}
                         >
-                            <Box
-                                sx={{
-                                    backgroundColor: 'rgba(36, 178, 255, 1)',
-                                    height: '1.5rem',
-                                    width: '1.5rem',
-                                    borderRadius: '0.5rem',
-                                }}
-                            />
-                            <Box>
-                                {widgetsUsed[0]["name"]}
+                            <Box sx={{ fontSize: '70%', display: 'flex', flexDirection: 'row', gap: '0.3rem', marginBottom: '0.3rem' }}>
+                                <Box sx={{ backgroundColor: w.color, height: '1.5rem', width: '1.5rem', borderRadius: '0.5rem' }} />
+                                <Box>{w.name}</Box>
                             </Box>
+                            <Box>{w.prepend}{w.val}</Box>
+                            <Box sx={{ fontSize: '70%' }}>{w.unit}</Box>
                         </Box>
-                        <Box>
-                            {widgetsUsed[0]["prepend"]}{widgetsUsed[0]["val"]}
-                        </Box>
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                            }}
-                        >
-                            {widgetsUsed[0]["unit"]}
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            borderRadius: '15px',
-                            backgroundColor: 'rgb(20, 20, 20)',
-                            padding: '10px',
-                            flexGrow: 1,
-                            maxWidth: '25%',
-                            minWidth: '100px',
-                            border: '0.5px solid rgb(66, 66, 66)',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '0.3rem',
-                                marginBottom: '0.3rem',
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    backgroundColor: 'rgba(36, 255, 149, 1)',
-                                    height: '1.5rem',
-                                    width: '1.5rem',
-                                    borderRadius: '0.5rem',
-                                }}
-                            />
-                            <Box>
-                                {widgetsUsed[1]["name"]}
-                            </Box>
-                        </Box>
-                        <Box>
-                            {widgetsUsed[1]["prepend"]}{widgetsUsed[1]["val"]}
-                        </Box>
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                            }}
-                        >
-                            {widgetsUsed[1]["unit"]}
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            borderRadius: '15px',
-                            backgroundColor: 'rgb(20, 20, 20)',
-                            padding: '10px',
-                            flexGrow: 1,
-                            maxWidth: '25%',
-                            minWidth: '100px',
-                            border: '0.5px solid rgb(66, 66, 66)',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '0.3rem',
-                                marginBottom: '0.3rem',
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    backgroundColor: 'rgba(255, 124, 126, 1)',
-                                    height: '1.5rem',
-                                    width: '1.5rem',
-                                    borderRadius: '0.5rem',
-                                }}
-                            />
-                            <Box>
-                                {widgetsUsed[2]["name"]}
-                            </Box>
-                        </Box>
-                        <Box>
-                            {widgetsUsed[2]["prepend"]}{widgetsUsed[2]["val"]}
-                        </Box>
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                            }}
-                        >
-                            {widgetsUsed[2]["unit"]}
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            borderRadius: '15px',
-                            backgroundColor: 'rgb(20, 20, 20)',
-                            padding: '10px',
-                            flexGrow: 1,
-                            maxWidth: '25%',
-                            minWidth: '100px',
-                            border: '0.5px solid rgb(66, 66, 66)',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                gap: '0.3rem',
-                                marginBottom: '0.3rem',
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    backgroundColor: 'rgba(255, 237, 98, 1)',
-                                    height: '1.5rem',
-                                    width: '1.5rem',
-                                    borderRadius: '0.5rem',
-                                }}
-                            />
-                            <Box>
-                                {widgetsUsed[3]["name"]}
-                            </Box>
-                        </Box>
-                        <Box>
-                            {widgetsUsed[3]["prepend"]}{widgetsUsed[3]["val"]}
-                        </Box>
-                        <Box
-                            sx={{
-                                fontSize: '70%',
-                            }}
-                        >
-                            {widgetsUsed[3]["unit"]}
-                        </Box>
-                    </Box>
+                    ))}
                 </Box>
                 <Box
                     sx={{
@@ -377,44 +172,14 @@ export default function Home() {
                         </Box>
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        borderRadius: '15px',
-                        backgroundColor: 'rgb(20, 20, 20)',
-                        width: '100%',
-                        border: '0.5px solid rgb(66, 66, 66)',
-                    }}
-                >
-                    <Box
-                        sx={{
-                            margin: '10px',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                mb: '10px',
-                            }}
-                        >
-                            Recents
-                        </Box>
+                <Box sx={{ borderRadius: '15px', backgroundColor: 'rgb(20, 20, 20)', width: '100%', border: '0.5px solid rgb(66, 66, 66)' }}>
+                    <Box sx={{ margin: '10px' }}>
+                        <Box sx={{ mb: '10px' }}>Recents</Box>
                     </Box>
                 </Box>
+                </>
+                )}
             </Box>
-            {/* <Box
-                sx={{
-                    width: '30%',
-                }}
-            >
-                <Box>
-                    Budgets
-                </Box>
-                <Box>
-                    Goals
-                </Box>
-                <Box>
-                    Insights
-                </Box>
-            </Box> */}
         </Box>
     )
 }

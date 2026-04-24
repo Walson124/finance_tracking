@@ -55,8 +55,8 @@ export default function Goals() {
                 setTotalCompleted(c);
                 setGoals(goal_data);
             }
-        }).catch((error) => {
-
+        }).catch(() => {
+            console.error("Failed to load goals");
         });
     }, []);
 

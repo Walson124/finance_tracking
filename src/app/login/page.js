@@ -27,7 +27,7 @@ export default function LoginPage() {
         setSubmitting(true);
 
         try {
-            const res = await fetch("/api/proxy/auth/login", {
+            const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -39,13 +39,6 @@ export default function LoginPage() {
                 throw new Error(data?.error || "Login failed");
             }
 
-            // IMPORTANT: actually store it as a cookie the middleware can read
-            if (!data?.session) throw new Error("No session returned");
-
-            // Dev-friendly cookie (not HttpOnly). Middleware will see it.
-            document.cookie = `session=${encodeURIComponent(data.session)}; Path=/; SameSite=Lax`;
-
-            // Go where the middleware wanted you to go
             const next =
                 new URLSearchParams(window.location.search).get("next") || "/home";
 

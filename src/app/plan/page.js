@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Button, Divider, MenuItem, TextField } from "@mui/material";
+import { Alert, Box, Button, Divider, MenuItem, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { generateRandomPastelColor, MONTHS_STR } from "../utils";
@@ -15,7 +15,7 @@ export default function Plan() {
         "Fun": 0,
         "Other": 0
     });
-    const [usage, setUsage] = useState({
+    const [usage] = useState({
         "Groceries": 100,
         "Amazon": 50,
     });
@@ -34,6 +34,9 @@ export default function Plan() {
 
     return (
         <Box>
+            <Alert severity="info" sx={{ mb: 2, borderRadius: "10px" }}>
+                Budget planning is coming soon — save functionality is not yet connected.
+            </Alert>
             <Box
                 sx={{
                     width: "100%",
@@ -64,6 +67,7 @@ export default function Plan() {
                     <Box>
                         <TextField
                             label="Month"
+                            value={month}
                             onChange={(e) => setMonth(e.target.value)}
                             size="small"
                             select
@@ -105,6 +109,7 @@ export default function Plan() {
                     <Box>
                         <TextField
                             label="Year"
+                            value={year}
                             onChange={(e) => setYear(e.target.value)}
                             size="small"
                             select
@@ -152,11 +157,11 @@ export default function Plan() {
                     }}
                 >
                     <Button
-                        sx={{
-                            mr: '10px',
-                        }}
+                        sx={{ mr: '10px' }}
                         size="small"
                         variant="contained"
+                        disabled
+                        title="Coming soon"
                     >
                         Save Changes
                     </Button>
